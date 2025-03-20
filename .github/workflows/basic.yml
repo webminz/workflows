@@ -2,6 +2,7 @@ name: GitHub Actions Demo
 on: [push]
 permissions:
   pull-requests: write
+  contents: write
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
@@ -22,13 +23,15 @@ jobs:
           git checkout -b $BRANCH_NAME
       - name: Commit data
         run: |
+          export BRANCH_NAME="update-results-${{ github.run_number}}"
           git add out.dat
           git commit -m "Add results"
+          git push -u origin $BRANCH_NAME
       - name: Create pull request
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           export BRANCH_NAME="update-results-${{ github.run_number}}"
-          gh pr create --title "Update results" --body "This PR adds the latest results file." --head $BRANCH_NAME --base main
+          gh pr create --title "Update results" --body "This PR adds the latest results file." --head $BRANCH_NAME
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
