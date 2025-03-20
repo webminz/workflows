@@ -28,7 +28,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          export BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+          export BRANCH_NAME="update-results-${{ github.run_number}}"
           gh pr create --title "Update results" --body "This PR adds the latest results file." --head $BRANCH_NAME --base main
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
