@@ -5,14 +5,25 @@ jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job ${{ github.job	}} is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - run: echo "This job ${{ github.run_number }} is now running on a ${{ runner.os }}"
       - name: Check out repository code
         uses: actions/checkout@v4
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - name: List files in the repository
+      - name: "Produce File"
         run: |
-          ls ${{ github.workspace }}
+          echo 'This must be comitted' > out.dat
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Commit data
+        run: |
+          git add out.dat
+          git commit -m "Add results"
+      - name: Create pull request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          export BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+          gh pr create --title "Update results" --body "This PR adds the latest results file." --head $BRANCH_NAME --base main
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
