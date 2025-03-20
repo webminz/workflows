@@ -16,6 +16,10 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Create and switch to a new branch
+        run: |
+          export BRANCH_NAME="update-results-${{ github.run_number}}"
+          git checkout -b $BRANCH_NAME
       - name: Commit data
         run: |
           git add out.dat
